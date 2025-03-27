@@ -1,0 +1,310 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum SubscriptionPlan {
+  STANDARD
+  PRO
+  BUSINESS
+}
+
+model User {
+  id            String    @id
+  name          String
+  email         String
+  emailVerified Boolean
+  image         String?
+  role          String?
+  banned        Boolean?
+  banReason     String?
+  banExpires    DateTime?
+
+  // Subscription and payments
+  subscriptions Subscription[]
+  payments      Payment[]
+
+  // User content
+  events  UserEvent[] // Events created by the user
+  storage Storage[]
+
+  // User settings
+  settings    UserSettings?
+  analytics   Analytics[]
+  eventLinks  EventLink[]
+  printOrders PrintOrder[]
+
+  //Auth 
+  members     Member[]
+  invitations Invitation[]
+  sessions    Session[]
+  accounts    Account[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@unique([email])
+  @@map("users")
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String
+  createdAt      DateTime
+  updatedAt      DateTime
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  impersonatedBy String?
+
+  activeOrganizationId String?
+
+  @@unique([token])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("verifications")
+}
+
+model Subscription {
+  id               String           @id @default(cuid())
+  userId           String?
+  businessId       String?          @unique
+  user             User?            @relation(fields: [userId], references: [id])
+  type             SubscriptionPlan
+  customerId       String           @unique
+  subscriptionId   String           @unique
+  priceId          String
+  status           String?
+  currentPeriodEnd DateTime?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  // setting the table name in our DB
+  @@map("subscriptions")
+}
+
+model Payment {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  amount    Float
+  currency  String
+  stripeId  String   @unique
+  status    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // setting the table name in our DB
+  @@map("payments")
+}
+
+// Change from just EVENT to USEREVENT
+
+model UserEvent {
+  id          String    @id @default(cuid())
+  title       String
+  status      String    @default("ACTIVE")
+  code        String    @unique
+  date        DateTime?
+  location    String?
+  description String?
+  userId      String
+  user        User      @relation(fields: [userId], references: [id])
+
+  galleries  Gallery[]
+  albums     Album[]
+  analytics  Analytics[]
+  eventLinks EventLink[]
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+
+  // setting the table name in our DB
+  @@map("user_events")
+}
+
+model UserSettings {
+  id                 String   @id @default(cuid())
+  userId             String   @unique
+  user               User     @relation(fields: [userId], references: [id])
+  theme              String   @default("light")
+  emailNotifications Boolean  @default(true)
+  pushNotifications  Boolean  @default(true)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  // setting the table name in our DB
+  @@map("user_settings")
+}
+
+model Organization {
+  id          String       @id
+  name        String
+  slug        String?
+  logo        String?
+  createdAt   DateTime
+  metadata    String?
+  members     Member[]
+  invitations Invitation[]
+
+  @@unique([slug])
+  @@map("organizations")
+}
+
+model Member {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           String
+  createdAt      DateTime
+
+  @@map("members")
+}
+
+model Invitation {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String?
+  status         String
+  expiresAt      DateTime
+  inviterId      String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@map("invitations")
+}
+
+model Gallery {
+  id      String    @id @default(cuid())
+  name    String
+  eventId String
+  event   UserEvent @relation(fields: [eventId], references: [id])
+  media   Media[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // setting the table name in our DB
+  @@map("galleries")
+}
+
+model Media {
+  id         String   @id @default(cuid())
+  url        String
+  type       String // Enum as string
+  status     String   @default("PENDING")
+  size       Float // in MB
+  galleryId  String
+  uploadedBy String?
+  gallery    Gallery  @relation(fields: [galleryId], references: [id])
+  albums     Album[]  @relation("AlbumMedia")
+  faceIds    String // Stored as JSON string of face IDs
+  metadata   Json? // JSON string with additional metadata (face locations, etc.)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@map("media")
+}
+
+model Storage {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  used      Float // in GB
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("storage")
+}
+
+model Analytics {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+  eventId   String?
+  event     UserEvent? @relation(fields: [eventId], references: [id])
+  type      String // Enum as string
+  value     Int
+  metadata  String? // JSON string for additional data
+  createdAt DateTime   @default(now())
+
+  @@map("analytics")
+}
+
+model EventLink {
+  id        String    @id @default(cuid())
+  token     String    @unique
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  eventId   String
+  event     UserEvent @relation(fields: [eventId], references: [id])
+  expiresAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  @@map("event_links")
+}
+
+model Album {
+  id          String       @id @default(cuid())
+  name        String
+  eventId     String
+  event       UserEvent    @relation(fields: [eventId], references: [id])
+  media       Media[]      @relation("AlbumMedia")
+  printOrders PrintOrder[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@map("albums")
+}
+
+model PrintOrder {
+  id          String   @id @default(cuid())
+  albumId     String
+  album       Album    @relation(fields: [albumId], references: [id])
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  status      String   @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED
+  provider    String // Printing service provider
+  details     String // JSON string with order details (size, paper type, etc.)
+  trackingUrl String? // Shipping tracking URL
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("print_orders")
+}
