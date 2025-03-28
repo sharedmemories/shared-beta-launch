@@ -10,7 +10,7 @@ export default function PricingSection({
   session: AuthSession | null;
 }) {
   return (
-    <div className="bg-gray-50 py-12 md:py-24 lg:py-32">
+    <div className="bg-gray-50 py-12 md:py-24 lg:py-32" id="pricing">
       <div className="container mx-auto px-4 md:px-6">
         <h1 className="text-text-primary mb-8 text-center text-3xl font-bold tracking-tighter sm:text-5xl">
           Features and pricing

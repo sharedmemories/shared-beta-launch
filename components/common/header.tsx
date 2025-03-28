@@ -14,7 +14,7 @@ import { AuthSession } from '@/types';
 import AvatarNav from './avatar-nav';
 
 const navigationData = {
-  main: [{ name: 'Pricing', href: '/pricing' }],
+  main: [{ name: 'Pricing', href: '#pricing' }],
   useCases: [
     {
       name: '💍 Weddings',
@@ -76,7 +76,7 @@ export default function Header({ session }: { session: AuthSession | null }) {
 
       {/* Desktop Navigation */}
 
-      {session && (
+      {!session && (
         <div className="hidden items-center gap-4 md:flex">
           <NavigationMenu>
             <NavigationMenuList>

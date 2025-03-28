@@ -80,14 +80,7 @@ const Footer = () => {
               Company
             </h3>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/about"
-                  className="text-sm text-gray-500 transition-colors hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400"
-                >
-                  About Us
-                </Link>
-              </li>
+             
               <li>
                 <Link
                   href="/contact"

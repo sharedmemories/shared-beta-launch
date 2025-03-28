@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -28,7 +28,7 @@ export default function AvatarNav({ user }: AvataNavProps) {
   const router = useRouter();
 
   return (
-    <DropdownMenu >
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="h-8 w-8 rounded-full">
           <Avatar>
@@ -39,7 +39,11 @@ export default function AvatarNav({ user }: AvataNavProps) {
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 p-5 grid gap-2" align="end" forceMount>
+      <DropdownMenuContent
+        className="grid w-56 gap-2 p-5"
+        align="end"
+        forceMount
+      >
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
             <p className="text-sm leading-none font-medium">{user.name}</p>
@@ -50,12 +54,12 @@ export default function AvatarNav({ user }: AvataNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="flex gap-2">
-          <Lock size={18} className='text-green-600' />
+          <Lock size={18} className="text-green-600" />
           <Link href="/dashboard">Dashboard</Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem className="flex gap-2">
-          <User size={18} className='text-purple-600' />
+          <User size={18} className="text-purple-600" />
           <Link href="/dashboard/profile">Profile</Link>
         </DropdownMenuItem>
 
@@ -72,7 +76,7 @@ export default function AvatarNav({ user }: AvataNavProps) {
             });
           }}
         >
-          <LogOut size={18} className='text-rose-600' />
+          <LogOut size={18} className="text-rose-600" />
           <span>Log Out</span>
         </DropdownMenuItem>
       </DropdownMenuContent>

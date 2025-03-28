@@ -28,7 +28,7 @@ export default function CTA({ session }: { session: AuthSession | null }) {
             {!session ? (
               <Button
                 onClick={openAuthDialog}
-                className="flex cursor-pointer items-center space-x-2 rounded-md px-8 py-5 text-white transition-colors hover:bg-purple-700"
+                className="flex cursor-pointer items-center space-x-2 rounded-md px-8 py-5 transition-colors"
               >
                 <span>Create your event</span>
                 <ArrowRight className="h-5 w-5" />
