@@ -36,7 +36,7 @@ export default function PricingCards({ plans, session }: PricingCardsProps) {
   };
 
   return (
-    <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+    <>
       {plans.map((plan) => (
         <Card
           key={plan.id}
@@ -86,6 +86,6 @@ export default function PricingCards({ plans, session }: PricingCardsProps) {
           </CardFooter>
         </Card>
       ))}
-    </div>
+    </>
   );
 }

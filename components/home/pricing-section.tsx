@@ -18,8 +18,9 @@ export default function PricingSection({
         <p className="text-md mb-12 text-center text-gray-500 md:text-xl">
           Choose the plan that&apos;s right for you.
         </p>
-        {/* Pass plans data as props */}
-        <PricingCards plans={polarPlans} session={session} />
+        <div className="mx-auto grid max-w-6xl grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <PricingCards plans={polarPlans} session={session} />
+        </div>
       </div>
     </div>
   );

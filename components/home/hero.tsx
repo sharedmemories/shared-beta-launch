@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { AuthSession } from '@/types';
 import { Button } from '../ui/button';
 import ChatPreview from './chat-preview';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, ChevronRight } from 'lucide-react';
 import { useAuthStore } from '@/lib/store/auth-store';
 
 const messages = [
@@ -65,10 +65,10 @@ export default function Hero({ session }: { session: AuthSession | null }) {
               {!session ? (
                 <Button
                   onClick={openAuthDialog}
-                  className="flex cursor-pointer items-center space-x-2 rounded-md px-8 py-5 text-white transition-colors"
+                  className="flex cursor-pointer items-center text-lg space-x-2 rounded-md px-8 py-5 text-white transition-colors"
                 >
-                  <span>Create your event</span>
-                  <ArrowRight className="h-5 w-5" />
+                  <span>Get Started</span>
+                  <ChevronRight size={12} />
                 </Button>
               ) : (
                 <Button

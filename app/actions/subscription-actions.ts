@@ -1,7 +1,9 @@
-import { auth } from "@/lib/auth";
-import { headers } from "next/headers";
-import { prisma } from "@/lib/prisma";
-import { polarApi } from ".";
+'use server';
+
+import { auth } from '@/lib/auth';
+import { polarApi } from '@/lib/polar';
+import { prisma } from '@/lib/prisma';
+import { headers } from 'next/headers';
 
 interface SubscriptionStatus {
   hasActiveSubscription: boolean;
@@ -18,7 +20,7 @@ export async function getPolarSubscription(): Promise<SubscriptionStatus> {
     if (!session?.user?.id) {
       return {
         hasActiveSubscription: false,
-        message: "User not authenticated",
+        message: 'User not authenticated',
         subscriptionPlan: null,
       };
     }
@@ -32,7 +34,7 @@ export async function getPolarSubscription(): Promise<SubscriptionStatus> {
     if (!subscription || !subscription.subscriptionId) {
       return {
         hasActiveSubscription: false,
-        message: "No subscription found",
+        message: 'No subscription found',
         subscriptionPlan: null,
       };
     }
@@ -44,27 +46,27 @@ export async function getPolarSubscription(): Promise<SubscriptionStatus> {
       id: subscriptionId,
     });
 
-    const isActive = ["active", "trialing"].includes(polarSubscription.status);
+    const isActive = ['active', 'trialing'].includes(polarSubscription.status);
 
-    if (isActive && status !== "active") {
+    if (isActive && status !== 'active') {
       await prisma.subscription.update({
         where: { subscriptionId },
-        data: { status: "active" },
+        data: { status: 'active' },
       });
     }
 
     return {
       hasActiveSubscription: isActive,
       message: isActive
-        ? "Active subscription confirmed with Polar"
-        : "Subscription is not active",
+        ? 'Active subscription confirmed with Polar'
+        : 'Subscription is not active',
       subscriptionPlan,
     };
   } catch (error) {
-    console.error("Error checking subscription status:", error);
+    console.error('Error checking subscription status:', error);
     return {
       hasActiveSubscription: false,
-      message: "Error checking subscription status",
+      message: 'Error checking subscription status',
       subscriptionPlan: null,
     };
   }

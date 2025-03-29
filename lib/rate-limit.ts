@@ -2,8 +2,8 @@ import { Redis } from '@upstash/redis';
 import { Ratelimit } from '@upstash/ratelimit';
 
 const redis = new Redis({
-  url: process.env.REDIS_URL || '',
-  token: process.env.REDIS_TOKEN || '',
+  url: process.env.UPSTASH_REDIS_REST_URL || '',
+  token: process.env.UPSTASH_REDIS_REST_TOKEN || '',
 });
 
 // Create a new ratelimit instance that allows 5 requests per 60 seconds for OTP sending (by email)

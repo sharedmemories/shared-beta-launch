@@ -1,24 +1,24 @@
-import { prisma } from "./prisma";
-import { resend } from "./emails/resend";
-import { betterAuth } from "better-auth";
-import { admin, emailOTP, organization } from "better-auth/plugins";
-import { reactInvitationEmail } from "./emails/invitation-template";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-import { getPolarSubscription } from "./polar/get-polar-subscription";
-import OtpEmail from "./emails/sign-in-template";
+import { prisma } from './prisma';
+import { resend } from './emails/resend';
+import { betterAuth } from 'better-auth';
+import OtpEmail from './emails/sign-in-template';
+import { prismaAdapter } from 'better-auth/adapters/prisma';
+import { admin, emailOTP, organization } from 'better-auth/plugins';
+import { reactInvitationEmail } from './emails/invitation-template';
+import { getPolarSubscription } from '@/app/actions/subscription-actions';
 
-const from = process.env.NO_REPLY_EMAIL || "delivered@resend.dev";
+const from = process.env.NO_REPLY_EMAIL || 'delivered@resend.dev';
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
-    provider: "postgresql", // or "mysql", "sqlite"
+    provider: 'postgresql', // or "mysql", "sqlite"
   }),
   user: {
     additionalFields: {
       role: {
-        type: "string",
+        type: 'string',
         required: false,
-        defaultValue: "user",
+        defaultValue: 'user',
         input: false, // don't allow user to set role during sign-up
       },
     },
@@ -40,11 +40,11 @@ export const auth = betterAuth({
     admin(),
     emailOTP({
       async sendVerificationOTP({ email, otp, type }) {
-        if (type === "sign-in") {
+        if (type === 'sign-in') {
           await resend.emails.send({
             from,
             to: email,
-            subject: "Sign in verification email",
+            subject: 'Sign in verification email',
             react: OtpEmail({
               email,
               otp,
@@ -57,7 +57,7 @@ export const auth = betterAuth({
       allowUserToCreateOrganization: async () => {
         const subscription = await getPolarSubscription();
         return (
-          subscription.subscriptionPlan === "BUSINESS" &&
+          subscription.subscriptionPlan === 'BUSINESS' &&
           subscription.hasActiveSubscription
         );
       },
