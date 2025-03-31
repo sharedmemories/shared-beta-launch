@@ -1,16 +1,28 @@
-import React from 'react';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
+import { requireOrganizationRole } from '@/lib/auth-utils';
 
-export default async function BusinessMembershipPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+export default async function BusinessClientPage({
+  params,
+}: {
+  params: Promise<{ slug?: string }>;
+}) {
+  const resolvedParams = await params;
 
-  if (!session?.user?.id) {
-    redirect('/');
-  }
+  const slug = resolvedParams.slug || '';
 
-  return <div>BusinessMembershipPage</div>;
+  // Get both the session and organization data
+  const { session, businessOrg } = await requireOrganizationRole(
+    slug,
+    'member'
+  );
+
+  return (
+    <div>
+      <h1 className="mb-4 text-2xl font-bold">Welcome to {businessOrg.name}</h1>
+      <p className="text-muted-foreground">
+        You are logged in as {session.user.name || session.user.email}
+      </p>
+
+      {/* Your page content here */}
+    </div>
+  );
 }

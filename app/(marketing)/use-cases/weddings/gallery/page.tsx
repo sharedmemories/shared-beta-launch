@@ -1,4 +1,5 @@
-import MediaGrid from '@/components/common/media-grid';
+import UseCaseMediaGrid from '@/components/common/use-media-grid';
+
 const photos = [
   {
     id: 1,
@@ -65,7 +66,7 @@ const photos = [
 
 export default function WeddingGallery() {
   return (
-    <MediaGrid
+    <UseCaseMediaGrid
       photos={photos}
       title="Greg & Sasha"
       description="A journey of love captured in moments."

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, LockKeyhole, RefreshCw } from 'lucide-react';
@@ -49,16 +49,14 @@ export default function OtpVerification({
     return () => clearInterval(interval);
   }, []);
 
-  const handleVerify = async () => {
+  const handleVerify = useCallback(async () => {
     if (otp.length !== 6) return;
 
     setIsVerifying(true);
     try {
-      // Track verification attempts
       const newAttempts = attempts + 1;
       setAttempts(newAttempts);
 
-      // Show warning if approaching max attempts
       if (newAttempts === MAX_ATTEMPTS - 1) {
         toast('You have 1 attempt remaining before temporary lockout.');
       }
@@ -69,7 +67,7 @@ export default function OtpVerification({
     } finally {
       setIsVerifying(false);
     }
-  };
+  }, [otp, attempts, onVerify]);
 
   const handleResend = async () => {
     setIsResending(true);
@@ -97,13 +95,6 @@ export default function OtpVerification({
     }
   };
 
-  // Auto-submit when OTP is fully entered
-  useEffect(() => {
-    if (otp.length === 6 && !isVerifying) {
-      handleVerify();
-    }
-  }, [otp]);
-
   return (
     <div className="mx-auto w-full max-w-md rounded-lg bg-white p-6 shadow-sm">
       <div className="mb-6">
@@ -124,7 +115,7 @@ export default function OtpVerification({
         </div>
         <h1 className="text-center text-xl font-semibold">Verify your email</h1>
         <p className="mt-2 text-center text-sm text-gray-500">
-          We've sent a code to {email}
+          We&apos;ve sent a code to {email}
         </p>
       </div>
 
@@ -171,7 +162,9 @@ export default function OtpVerification({
       </div>
 
       <div className="text-center">
-        <p className="mb-2 text-sm text-gray-500">Didn't receive a code?</p>
+        <p className="mb-2 text-sm text-gray-500">
+          Didn&apos;t receive a code?
+        </p>
         <Button
           variant="link"
           onClick={handleResend}
@@ -193,7 +186,7 @@ export default function OtpVerification({
 
       <div className="mt-8 text-center text-xs text-gray-500">
         <p>
-          By signing in your agree to Shared Memories'
+          By signing in your agree to Shared Memories
           <br />
           <Link href="/terms" className="hover:underline">
             Terms of Service

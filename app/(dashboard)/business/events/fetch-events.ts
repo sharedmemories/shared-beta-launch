@@ -1,12 +1,9 @@
-import { Prisma } from '@prisma/client';
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
+import { Prisma } from '@prisma/client';
+import { getCachedSession } from '@/lib/auth-utils';
 
 export async function fetchEvents(page: number, search: string) {
-  const session = await auth.api.getSession({
-    headers: await headers(), // you need to pass the headers object.
-  });
+  const session = await getCachedSession()
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized');

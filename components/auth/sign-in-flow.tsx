@@ -1,22 +1,26 @@
 'use client';
 
+import { toast } from 'sonner';
 import { useState, useEffect } from 'react';
+import { GoogleIcon } from '../common/svgs';
 import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Mail, RefreshCw } from 'lucide-react';
 import OtpVerification from './otp-verification';
-import { GoogleIcon } from '../common/svgs';
-import { toast } from 'sonner';
-import { authClient } from '@/lib/auth-client';
+import { authClient, signIn } from '@/lib/auth-client';
 
-export default function SignInFlow() {
+export default function SignInFlow({
+  onAuthSuccess,
+}: {
+  onAuthSuccess: () => void;
+}) {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [step, setStep] = useState<'email' | 'otp'>('email');
   const [isSending, setIsSending] = useState(false);
   const [rateLimited, setRateLimited] = useState(false);
-  const [retryAfter, setRetryAfter] = useState<number | null>(null);
+  const [, setRetryAfter] = useState<number | null>(null);
   const [retryCountdown, setRetryCountdown] = useState<number | null>(null);
 
   // Countdown effect for rate limiting
@@ -127,7 +131,7 @@ export default function SignInFlow() {
       }
 
       // Verify OTP and sign in the user using better-auth
-      const { data, error } = await authClient.signIn.emailOtp({
+      const { error } = await authClient.signIn.emailOtp({
         email,
         otp,
       });
@@ -140,8 +144,9 @@ export default function SignInFlow() {
 
       toast('You have successfully signed in.');
 
-      // Redirect to dashboard or home page after successful sign-in
+      // Redirect to dashboard  page after successful sign-in
       router.push('/dashboard');
+      onAuthSuccess();
     } catch (error) {
       console.error('Error verifying OTP:', error);
       toast('An unexpected error occurred. Please try again later.');
@@ -217,12 +222,35 @@ export default function SignInFlow() {
         </div>
         <h1 className="text-xl font-semibold">Sign In</h1>
         <p className="mt-2 text-sm text-gray-500">
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <a href="#" className="text-gray-600 hover:underline">
             Sign up
           </a>
           .
         </p>
+      </div>
+
+      <Button
+        variant="outline"
+        className="mb-6 flex w-full items-center justify-center gap-2"
+        onClick={async () => {
+          await signIn.social({
+            provider: 'google',
+            callbackURL: '/dashboard',
+          });
+        }}
+      >
+        <GoogleIcon />
+        Sign in with Google
+      </Button>
+
+      <div className="relative mb-1">
+        <div className="absolute inset-0 flex items-center">
+          <div className="w-full border-t border-gray-200"></div>
+        </div>
+        <div className="relative flex justify-center text-xs uppercase">
+          <span className="bg-white px-2 text-gray-500">OR CONTINUE WITH</span>
+        </div>
       </div>
 
       <div className="mb-1">
@@ -266,26 +294,9 @@ export default function SignInFlow() {
         </Button>
       </div>
 
-      <div className="relative mb-6">
-        <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-gray-200"></div>
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-white px-2 text-gray-500">OR CONTINUE WITH</span>
-        </div>
-      </div>
-
-      <Button
-        variant="outline"
-        className="mb-6 flex w-full items-center justify-center gap-2"
-      >
-        <GoogleIcon />
-        Sign in with Google
-      </Button>
-
       <div className="text-center text-xs text-gray-500">
         <p>
-          By signing in your agree to Shared Memories'
+          By signing in your agree to Shared Memories
           <br />
           <a href="#" className="text-gray-600 hover:underline">
             Terms of Service

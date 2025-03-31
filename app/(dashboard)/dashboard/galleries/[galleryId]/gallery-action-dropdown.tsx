@@ -29,9 +29,9 @@ export function GalleryActionDropdown({
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
-  console.log('isUploadDialogOpen', isUploadDialogOpen);
-  console.log('isShareDialogOpen', isShareDialogOpen);
-  console.log('isDeleteDialogOpen', isDeleteDialogOpen);
+  // console.log('isUploadDialogOpen', isUploadDialogOpen);
+  // console.log('isShareDialogOpen', isShareDialogOpen);
+  // console.log('isDeleteDialogOpen', isDeleteDialogOpen);
 
   return (
     <>

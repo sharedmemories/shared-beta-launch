@@ -1,18 +1,15 @@
 'use server';
 
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
 import { gallerySchema } from '@/lib/validations/gallery';
+import { getCachedSession } from '@/lib/auth-utils';
 
 export async function createGallery(
   formData: FormData
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(), // you need to pass the headers object.
-    });
+    const session = await getCachedSession();
 
     if (!session?.user?.id) {
       return { success: false, message: 'Unauthorized' };
@@ -59,9 +56,7 @@ export async function deleteGallery(
   galleryId: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(), // you need to pass the headers object.
-    });
+    const session = await getCachedSession();
 
     if (!session?.user?.id) {
       return { success: false, message: 'Unauthorized' };

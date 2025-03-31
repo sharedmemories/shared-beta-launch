@@ -1,5 +1,3 @@
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import {
   fetchRecentGalleries,
@@ -9,12 +7,11 @@ import {
   fetchUpcomingEvents,
   getStorageUsed,
 } from '@/lib/queries/dashboard-stats';
+import { getCachedSession } from '@/lib/auth-utils';
 import { DashboardContent } from '../../../components/dashboard/dashboard-content';
 
 export default async function DashboardPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session?.user) {
     redirect('/');

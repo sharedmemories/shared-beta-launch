@@ -1,12 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { ChevronLeft } from 'lucide-react';
 import { redirect } from 'next/navigation';
 import { fetchGallery } from './fetch-gallery';
 import { Button } from '@/components/ui/button';
-import { MediaGrid } from '../../media/media-grid';
+import { DashMediaGrid } from '../../media/dash-media-grid';
+import { getCachedSession } from '@/lib/auth-utils';
 import { UploadMediaDialog } from './upload-media-dialog';
 import { ShareGalleryDialog } from './share-gallery-dialog';
 import { DeleteGalleryDialog } from './delete-gallery-dialog';
@@ -22,9 +21,7 @@ export default async function GalleryPage({
 }) {
   const resolvedParams = await params;
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session) {
     redirect('/');
@@ -127,7 +124,7 @@ export default async function GalleryPage({
           />
         </EmptyPlaceholder>
       ) : (
-        <MediaGrid media={transformedMedia} hidePending />
+        <DashMediaGrid media={transformedMedia} hidePending />
       )}
     </DashboardShell>
   );

@@ -1,5 +1,5 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Calendar, Image as ImageIcon } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface EventMetricsProps {
   totalEvents: number;
@@ -17,11 +17,11 @@ export function EventMetrics({ totalEvents, totalUploads }: EventMetricsProps) {
           <CardTitle className="text-sm font-medium">
             Average Uploads per Event
           </CardTitle>
-          <ImageIcon className="h-4 w-4 text-muted-foreground" />
+          <ImageIcon className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{averageUploadsPerEvent}</div>
-          <p className="text-xs text-muted-foreground">Media items per event</p>
+          <p className="text-muted-foreground text-xs">Media items per event</p>
         </CardContent>
       </Card>
 
@@ -30,14 +30,14 @@ export function EventMetrics({ totalEvents, totalUploads }: EventMetricsProps) {
           <CardTitle className="text-sm font-medium">
             Event Distribution
           </CardTitle>
-          <Calendar className="h-4 w-4 text-muted-foreground" />
+          <Calendar className="text-muted-foreground h-4 w-4" />
         </CardHeader>
         <CardContent>
           <div className="space-y-2">
             <div className="flex items-center">
               <div className="flex-1">
                 <p className="text-sm font-medium">Active Events</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Currently running events
                 </p>
               </div>
@@ -46,7 +46,7 @@ export function EventMetrics({ totalEvents, totalUploads }: EventMetricsProps) {
             <div className="flex items-center">
               <div className="flex-1">
                 <p className="text-sm font-medium">Total Uploads</p>
-                <p className="text-xs text-muted-foreground">
+                <p className="text-muted-foreground text-xs">
                   Across all events
                 </p>
               </div>

@@ -1,11 +1,8 @@
-import { auth } from '@/lib/auth';
+import { getCachedSession } from '@/lib/auth-utils';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
 
 export async function fetchPendingMedia() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized');

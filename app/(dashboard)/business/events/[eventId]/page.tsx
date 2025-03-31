@@ -1,30 +1,28 @@
 import React from 'react';
-import { EventHeader } from './event-header';
-import { fetchEvent } from './fetch-event';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { fetchEvent } from './fetch-event';
+import { EventHeader } from './event-header';
 import { ShareOptions } from './share-options';
+import { getCachedSession } from '@/lib/auth-utils';
 import { GalleryGrid } from '@/components/dashboard/gallery-grid';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default async function EventPage({
   params,
 }: {
-  params: {
+  params: Promise<{
     eventId: string;
-  };
+  }>;
 }) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
+  const resolvedParams = await params;
   if (!session) {
     redirect('/');
   }
 
   const userEvent = await fetchEvent({
-    eventId: params.eventId,
+    eventId: resolvedParams.eventId,
     userId: session.user.id,
   });
 

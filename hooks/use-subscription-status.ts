@@ -15,6 +15,7 @@ export function useSubscriptionStatus() {
     refetchOnMount: false, // Don't refetch immediately if data is already there
   });
 
+  //Make Data available on the UI
   useEffect(() => {
     if (data) {
       setSubscription(

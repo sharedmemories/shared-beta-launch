@@ -1,17 +1,15 @@
 'use server';
 
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { getCachedSession } from '@/lib/auth-utils';
 
 export async function approveMedia(
   mediaId: string
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(), // you need to pass the headers object.
-    });
+    const session = await getCachedSession();
 
     if (!session?.user?.id) {
       return { success: false, message: 'Unauthorized' };
@@ -49,9 +47,7 @@ export async function rejectMedia(
 
 export async function deleteMedia(mediaIds: string[]) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getCachedSession();
 
     if (!session?.user?.id) {
       return { success: false, message: 'Unauthorized' };
@@ -63,17 +59,17 @@ export async function deleteMedia(mediaIds: string[]) {
         id: { in: mediaIds },
         gallery: {
           event: {
-            userId: session.user.id
-          }
-        }
+            userId: session.user.id,
+          },
+        },
       },
       include: {
         gallery: {
           include: {
-            event: true
-          }
-        }
-      }
+            event: true,
+          },
+        },
+      },
     });
 
     if (mediaItems.length === 0) {
@@ -81,14 +77,17 @@ export async function deleteMedia(mediaIds: string[]) {
     }
 
     // Group media by event code for batch deletion
-    const mediaByEvent = mediaItems.reduce((acc, media) => {
-      const eventCode = media.gallery.event.code;
-      if (!acc[eventCode]) {
-        acc[eventCode] = [];
-      }
-      acc[eventCode].push(media.id);
-      return acc;
-    }, {} as Record<string, string[]>);
+    const mediaByEvent = mediaItems.reduce(
+      (acc, media) => {
+        const eventCode = media.gallery.event.code;
+        if (!acc[eventCode]) {
+          acc[eventCode] = [];
+        }
+        acc[eventCode].push(media.id);
+        return acc;
+      },
+      {} as Record<string, string[]>
+    );
 
     // Get the headers we need to forward
     const headersList = headers();
@@ -96,12 +95,14 @@ export async function deleteMedia(mediaIds: string[]) {
 
     // Delete media files from S3 and database for each event
     for (const [eventCode, ids] of Object.entries(mediaByEvent)) {
-      const baseUrl = process.env.NEXT_PUBLIC_APP_URL || `http://localhost:${process.env.PORT || 3000}`;
+      const baseUrl =
+        process.env.NEXT_PUBLIC_APP_URL ||
+        `http://localhost:${process.env.PORT || 3000}`;
       const response = await fetch(`${baseUrl}/api/aws/delete/${eventCode}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Cookie': cookie || '', // Forward the authentication cookie
+          Cookie: cookie || '', // Forward the authentication cookie
         },
         body: JSON.stringify({ mediaIds: ids }),
         credentials: 'include', // Include credentials in the request
@@ -123,15 +124,16 @@ export async function deleteMedia(mediaIds: string[]) {
     revalidatePath('/dashboard/media/pending');
     revalidatePath('/dashboard/media/approved');
 
-    return { 
-      success: true, 
-      message: `Successfully deleted ${mediaIds.length} media item${mediaIds.length === 1 ? '' : 's'}` 
+    return {
+      success: true,
+      message: `Successfully deleted ${mediaIds.length} media item${mediaIds.length === 1 ? '' : 's'}`,
     };
   } catch (error) {
     console.error('Error deleting media:', error);
-    return { 
-      success: false, 
-      message: error instanceof Error ? error.message : 'Failed to delete media' 
+    return {
+      success: false,
+      message:
+        error instanceof Error ? error.message : 'Failed to delete media',
     };
   }
 }

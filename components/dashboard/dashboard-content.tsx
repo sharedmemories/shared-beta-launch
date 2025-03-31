@@ -106,7 +106,7 @@ export function DashboardContent({
             </p>
           </CardContent>
         </Card>
-        <Link href="/dashboard/events" prefetch>
+        <Link href="/dashboard/events">
           <Card className="hover:bg-sidebar-accent cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Events</CardTitle>
@@ -120,7 +120,7 @@ export function DashboardContent({
           </Card>
         </Link>
 
-        <Link href="/dashboard/galleries" prefetch>
+        <Link href="/dashboard/galleries">
           <Card className="hover:bg-sidebar-accent cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Galleries</CardTitle>
@@ -133,7 +133,7 @@ export function DashboardContent({
             </CardContent>
           </Card>
         </Link>
-        <Link href="/dashboard/media/pending" prefetch>
+        <Link href="/dashboard/media/pending">
           <Card className="hover:bg-sidebar-accent cursor-pointer">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
@@ -272,9 +272,7 @@ export function DashboardContent({
             Recent Galleries
           </h2>
           <Button variant="outline" asChild className="hover:bg-sidebar-accent">
-            <Link href="/dashboard/galleries" prefetch>
-              View all galleries
-            </Link>
+            <Link href="/dashboard/galleries">View all galleries</Link>
           </Button>
         </div>
         <GalleryGrid galleries={recentGalleries} />

@@ -14,7 +14,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 interface ShareOptionsProps {
   eventId: string;
@@ -33,17 +33,10 @@ export function ShareOptions({
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast({
-        title: 'Copied!',
-        description: 'The link has been copied to your clipboard.',
-      });
+      toast('The link has been copied to your clipboard.');
     } catch (err) {
       console.error(err);
-      toast({
-        title: 'Failed to copy',
-        description: 'Please try again.',
-        variant: 'destructive',
-      });
+      toast('Please try again.');
     }
   };
 
@@ -135,7 +128,7 @@ export function ShareOptions({
                 </Link>
               </Button>
             </div>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-muted-foreground text-sm">
               Display this page at your venue to show a live photo wall of all
               uploaded images.
             </p>

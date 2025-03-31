@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
-import { Instagram, Twitter } from 'lucide-react';
+import { Instagram } from 'lucide-react';
+import { RiTwitterXFill } from 'react-icons/ri';
 import { Separator } from '@/components/ui/separator';
 
 const Footer = () => {
@@ -35,7 +36,7 @@ const Footer = () => {
                 rel="noopener noreferrer"
                 className="text-gray-500 transition-colors hover:text-purple-600 dark:text-gray-400 dark:hover:text-purple-400"
               >
-                <Twitter className="h-5 w-5" />
+                <RiTwitterXFill className="h-5 w-5" />
                 <span className="sr-only">Twitter</span>
               </Link>
             </div>
@@ -80,7 +81,6 @@ const Footer = () => {
               Company
             </h3>
             <ul className="space-y-3">
-             
               <li>
                 <Link
                   href="/contact"

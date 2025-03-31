@@ -1,10 +1,4 @@
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
-import { redirect } from 'next/navigation';
 import React from 'react';
-import { ClientCard } from './client-card';
-import { prisma } from '@/lib/prisma';
-import { DashboardContent } from '../../../components/dashboard/dashboard-content';
 import {
   fetchRecentGalleries,
   fetchTotalEvents,
@@ -12,7 +6,10 @@ import {
   fetchTotalMedia,
   fetchUpcomingEvents,
 } from '@/lib/queries/dashboard-stats';
-import { getPolarSubscription } from '@/lib/polar/get-polar-subscription';
+import { prisma } from '@/lib/prisma';
+import { ClientCard } from './client-card';
+import { withBusinessAuth } from '@/lib/auth-utils';
+import { DashboardContent } from '../../../components/dashboard/dashboard-content';
 
 async function getStorageUsed(userId: string) {
   const storage = await prisma.storage.findFirst({
@@ -22,31 +19,10 @@ async function getStorageUsed(userId: string) {
 }
 
 export default async function BusinessDashboard() {
-  const [session, organization] = await Promise.all([
-    auth.api.getSession({
-      headers: await headers(),
-    }),
-    auth.api.getFullOrganization({
-      headers: await headers(),
-    }),
-  ]).catch(() => {
-    throw redirect('/dashboard');
+  const { session, organization, userId } = await withBusinessAuth({
+    redirectUnauthenticated: '/',
+    redirectInvalidSubscription: '/dashboard',
   });
-
-  if (!session?.user?.id) {
-    redirect('/');
-  }
-
-  // Fetch and validate the subscription
-  const subscription = await getPolarSubscription();
-
-  const isBusinessSubscriptionActive =
-    subscription.subscriptionPlan === 'BUSINESS' &&
-    subscription.hasActiveSubscription;
-
-  if (!isBusinessSubscriptionActive) {
-    throw redirect('/dashboard'); // Redirect if subscription is invalid
-  }
 
   const [
     upcomingEvents,
@@ -56,12 +32,12 @@ export default async function BusinessDashboard() {
     totalMedia,
     storageUsed,
   ] = await Promise.all([
-    fetchUpcomingEvents(session.user.id),
-    fetchRecentGalleries(session.user.id),
-    fetchTotalEvents(session.user.id),
-    fetchTotalGalleries(session.user.id),
-    fetchTotalMedia(session.user.id),
-    getStorageUsed(session.user.id),
+    fetchUpcomingEvents(userId),
+    fetchRecentGalleries(userId),
+    fetchTotalEvents(userId),
+    fetchTotalGalleries(userId),
+    fetchTotalMedia(userId),
+    getStorageUsed(userId),
   ]);
 
   return (
@@ -74,10 +50,7 @@ export default async function BusinessDashboard() {
       totalMedia={totalMedia}
       storageUsed={storageUsed}
     >
-      <ClientCard
-        session={JSON.parse(JSON.stringify(session))}
-        activeOrganization={JSON.parse(JSON.stringify(organization))}
-      />
+      <ClientCard session={session} activeOrganization={organization} />
     </DashboardContent>
   );
 }

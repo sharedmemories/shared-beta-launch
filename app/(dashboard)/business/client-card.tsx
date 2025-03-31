@@ -1,36 +1,33 @@
 'use client';
 
 import { useState } from 'react';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { toast } from 'sonner';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import {
-  organization,
-  useListOrganizations,
-  useSession,
-} from '@/lib/auth-client';
+import { Label } from '@/components/ui/label';
+import { Button } from '@/components/ui/button';
 import { ChevronDownIcon, Loader2 } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { ActiveOrganization, AuthSession } from '@/types';
-import { toast } from '@/hooks/use-toast';
-// import CopyBtn from '@/components/dashboard/copy-btn';
 import { InviteMemberDialog } from './invite-member-dialog';
-import { Label } from '@/components/ui/label';
 import { CreateClientDialog } from './create-client-dialog';
+import { organization, useListOrganizations } from '@/lib/auth-client';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export function ClientCard(props: {
+type ClientCardProps = {
   session: AuthSession | null;
   activeOrganization: ActiveOrganization | null;
-}) {
+};
+
+export function ClientCard({ session, activeOrganization }: ClientCardProps) {
   const organizations = useListOrganizations();
   const [optimisticOrg, setOptimisticOrg] = useState<ActiveOrganization | null>(
-    props.activeOrganization
+    activeOrganization
   );
 
   const [isRevoking, setIsRevoking] = useState<string[]>([]);
@@ -40,9 +37,6 @@ export function ClientCard(props: {
     visible: { opacity: 1, height: 'auto' },
     exit: { opacity: 0, height: 0 },
   };
-
-  const { data } = useSession();
-  const session = data || props.session;
 
   const currentMember = optimisticOrg?.members.find(
     (member) => member.userId === session?.user.id
@@ -55,7 +49,7 @@ export function ClientCard(props: {
         <div className="flex justify-between">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <div className="flex items-center gap-1 cursor-pointer">
+              <div className="flex cursor-pointer items-center gap-1">
                 <p className="text-sm">
                   <span className="font-bold"></span>{' '}
                   {optimisticOrg?.name || 'Personal'}
@@ -66,7 +60,7 @@ export function ClientCard(props: {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start">
               <DropdownMenuItem
-                className=" py-1"
+                className="py-1"
                 onClick={async () => {
                   organization.setActive({
                     organizationId: null,
@@ -74,11 +68,11 @@ export function ClientCard(props: {
                   setOptimisticOrg(null);
                 }}
               >
-                <p className="text-sm sm">Personal</p>
+                <p className="sm text-sm">Personal</p>
               </DropdownMenuItem>
               {organizations.data?.map((org) => (
                 <DropdownMenuItem
-                  className=" py-1"
+                  className="py-1"
                   key={org.id}
                   onClick={async () => {
                     if (org.id === optimisticOrg?.id) {
@@ -95,7 +89,7 @@ export function ClientCard(props: {
                     setOptimisticOrg(data);
                   }}
                 >
-                  <p className="text-sm sm">{org.name}</p>
+                  <p className="sm text-sm">{org.name}</p>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -107,7 +101,7 @@ export function ClientCard(props: {
         <div className="flex items-center gap-2">
           <Avatar className="rounded-none">
             <AvatarImage
-              className="object-cover w-full h-full rounded-none"
+              className="h-full w-full rounded-none object-cover"
               src={optimisticOrg?.logo || ''}
             />
             <AvatarFallback className="rounded-none">
@@ -116,26 +110,26 @@ export function ClientCard(props: {
           </Avatar>
           <div>
             <p>{optimisticOrg?.name || 'Personal'}</p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-muted-foreground text-xs">
               {optimisticOrg?.members.length || 1} members
             </p>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex gap-8 flex-col md:flex-row">
-          <div className="flex flex-col gap-2 flex-grow">
-            <p className="font-medium border-b-2 border-b-foreground/10">
+        <div className="flex flex-col gap-8 md:flex-row">
+          <div className="flex flex-grow flex-col gap-2">
+            <p className="border-b-foreground/10 border-b-2 font-medium">
               Members
             </p>
             <div className="flex flex-col gap-2">
               {optimisticOrg?.members.map((member) => (
                 <div
                   key={member.id}
-                  className="flex justify-between items-center"
+                  className="flex items-center justify-between"
                 >
                   <div className="flex items-center gap-2">
-                    <Avatar className="sm:flex w-9 h-9">
+                    <Avatar className="h-9 w-9 sm:flex">
                       <AvatarImage
                         src={member.user.image || ''}
                         className="object-cover"
@@ -146,7 +140,7 @@ export function ClientCard(props: {
                     </Avatar>
                     <div>
                       <p className="text-sm">{member.user.name}</p>
-                      <p className="text-xs text-muted-foreground">
+                      <p className="text-muted-foreground text-xs">
                         {member.role}
                       </p>
                     </div>
@@ -179,15 +173,15 @@ export function ClientCard(props: {
                     </Avatar>
                     <div>
                       <p className="text-sm">{session?.user.name}</p>
-                      <p className="text-xs text-muted-foreground">Owner</p>
+                      <p className="text-muted-foreground text-xs">Owner</p>
                     </div>
                   </div>
                 </div>
               )}
             </div>
           </div>
-          <div className="flex flex-col gap-2 flex-grow">
-            <p className="font-medium border-b-2 border-b-foreground/10">
+          <div className="flex flex-grow flex-col gap-2">
+            <p className="border-b-foreground/10 border-b-2 font-medium">
               Invites
             </p>
             <div className="flex flex-col gap-2">
@@ -206,7 +200,7 @@ export function ClientCard(props: {
                     >
                       <div>
                         <p className="text-sm">{invitation.email}</p>
-                        <p className="text-xs text-muted-foreground">
+                        <p className="text-muted-foreground text-xs">
                           {invitation.role}
                         </p>
                       </div>
@@ -225,9 +219,7 @@ export function ClientCard(props: {
                                   setIsRevoking([...isRevoking, invitation.id]);
                                 },
                                 onSuccess: () => {
-                                  toast({
-                                    title: 'Invitation revoked successfully',
-                                  });
+                                  toast('Invitation revoked successfully');
 
                                   setIsRevoking(
                                     isRevoking.filter(
@@ -245,9 +237,7 @@ export function ClientCard(props: {
                                 onError: (ctx: {
                                   error: { message: string };
                                 }) => {
-                                  toast({
-                                    title: ctx.error.message,
-                                  });
+                                  toast(ctx.error.message);
                                   setIsRevoking(
                                     isRevoking.filter(
                                       (id) => id !== invitation.id
@@ -264,18 +254,13 @@ export function ClientCard(props: {
                             'Revoke'
                           )}
                         </Button>
-                        <div>
-                          {/* <CopyBtn
-                            textToCopy={`${window.location.origin}/accept-invitation/${invitation.id}`}
-                          /> */}
-                        </div>
                       </div>
                     </motion.div>
                   ))}
               </AnimatePresence>
               {optimisticOrg?.invitations.length === 0 && (
                 <motion.p
-                  className="text-sm text-muted-foreground"
+                  className="text-muted-foreground text-sm"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -284,14 +269,14 @@ export function ClientCard(props: {
                 </motion.p>
               )}
               {!optimisticOrg?.id && (
-                <Label className="text-xs text-muted-foreground">
+                <Label className="text-muted-foreground text-xs">
                   You can&apos;t invite members to your personal workspace.
                 </Label>
               )}
             </div>
           </div>
         </div>
-        <div className="flex justify-end w-full mt-4">
+        <div className="mt-4 flex w-full justify-end">
           <div>
             <div>
               {optimisticOrg?.id && (

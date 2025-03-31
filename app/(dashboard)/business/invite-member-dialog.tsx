@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogClose,
@@ -17,12 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { toast } from '@/hooks/use-toast';
-import { organization } from '@/lib/auth-client';
-import { ActiveOrganization } from '@/types';
-import { Input } from '@/components/ui/input';
 import { MailPlus } from 'lucide-react';
+import { ActiveOrganization } from '@/types';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { organization } from '@/lib/auth-client';
 
 export function InviteMemberDialog({
   setOptimisticOrg,
@@ -31,10 +30,10 @@ export function InviteMemberDialog({
   setOptimisticOrg: (org: ActiveOrganization | null) => void;
   optimisticOrg: ActiveOrganization | null;
 }) {
-  //   const [open, setOpen] = useState(false);
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState('member');
   const [loading, setLoading] = useState(false);
+  const [role, setRole] = useState('member');
+  const [email, setEmail] = useState('');
+
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -43,7 +42,7 @@ export function InviteMemberDialog({
           <p>Invite Member</p>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] w-11/12">
+      <DialogContent className="w-11/12 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Invite Member</DialogTitle>
           <DialogDescription>
@@ -99,15 +98,18 @@ export function InviteMemberDialog({
                           ...optimisticOrg,
                           invitations: [
                             ...(optimisticOrg?.invitations || []),
-                            ctx.data,
+                            {
+                              ...ctx.data,
+                              role: ctx.data.role as
+                                | 'member'
+                                | 'admin'
+                                | 'owner', // ✅ Explicitly cast `role`
+                            },
                           ],
                         });
                       }
                     },
                   },
-                });
-                toast({
-                  title: '',
                 });
               }}
             >

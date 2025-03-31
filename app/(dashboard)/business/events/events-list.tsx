@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { EmptyPlaceholder } from '@/components/common/empty-placeholder';
-import { CreateEventDialog } from '@/components/dashboard/create-event-dialog';
 import { fetchEvents } from './fetch-events';
+import { Button } from '@/components/ui/button';
 import { EventsPagination } from './events-pagination';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { CreateEventDialog } from '@/components/dashboard/create-event-dialog';
+import { EmptyPlaceholder } from '@/components/dashboard/empty-placeholder';
 
 export async function EventsList({
   page,
@@ -35,7 +35,7 @@ export async function EventsList({
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
         {events.map((event) => (
           <Link key={event.id} href={`/dashboard/events/${event.id}`}>
-            <Card className="cursor-pointer hover:bg-sidebar-accent">
+            <Card className="hover:bg-sidebar-accent cursor-pointer">
               <CardHeader>
                 <CardTitle className="line-clamp-1">{event.title}</CardTitle>
                 <div>
@@ -45,7 +45,7 @@ export async function EventsList({
               </CardHeader>
               <CardContent>
                 <div className="flex items-center justify-between">
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-muted-foreground text-sm">
                     Created{' '}
                     {new Date(event.createdAt).toLocaleDateString('en-US', {
                       month: 'short',

@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { useEffect, useState } from 'react';
 import { useSwipeable } from 'react-swipeable';
 import { Button } from '@/components/ui/button';
+import { useCallback, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 
@@ -17,9 +17,13 @@ interface MediaCarouselProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function MediaCarousel({ media, initialIndex, open, onOpenChange }: MediaCarouselProps) {
+export function MediaCarousel({
+  media,
+  initialIndex,
+  open,
+  onOpenChange,
+}: MediaCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
-
 
   // Reset index when modal opens
   useEffect(() => {
@@ -28,13 +32,13 @@ export function MediaCarousel({ media, initialIndex, open, onOpenChange }: Media
     }
   }, [open, initialIndex]);
 
-  const showNext = () => {
+  const showNext = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % media.length);
-  };
+  }, [media.length]);
 
-  const showPrevious = () => {
+  const showPrevious = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + media.length) % media.length);
-  };
+  }, [media.length]);
 
   // Handle keyboard navigation
   useEffect(() => {
@@ -63,16 +67,19 @@ export function MediaCarousel({ media, initialIndex, open, onOpenChange }: Media
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-screen-lg w-full p-0 gap-0">
-        <div className="relative flex items-center justify-center min-h-[50vh]" {...handlers}>
+      <DialogContent className="w-full max-w-screen-lg gap-0 p-0">
+        <div
+          className="relative flex min-h-[50vh] items-center justify-center"
+          {...handlers}
+        >
           {/* Navigation buttons */}
           <Button
             variant="ghost"
             size="icon"
             className={cn(
-              "absolute left-2 z-10 h-auto aspect-square p-1.5",
-              "hover:bg-background/80 transition-colors",
-              "hidden sm:flex"
+              'absolute left-2 z-10 aspect-square h-auto p-1.5',
+              'hover:bg-background/80 transition-colors',
+              'hidden sm:flex'
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -86,9 +93,9 @@ export function MediaCarousel({ media, initialIndex, open, onOpenChange }: Media
             variant="ghost"
             size="icon"
             className={cn(
-              "absolute right-2 z-10 h-auto aspect-square p-1.5",
-              "hover:bg-background/80 transition-colors",
-              "hidden sm:flex"
+              'absolute right-2 z-10 aspect-square h-auto p-1.5',
+              'hover:bg-background/80 transition-colors',
+              'hidden sm:flex'
             )}
             onClick={(e) => {
               e.stopPropagation();
@@ -99,9 +106,9 @@ export function MediaCarousel({ media, initialIndex, open, onOpenChange }: Media
           </Button>
 
           {/* Media content */}
-          <div className="w-full h-full flex items-center justify-center">
+          <div className="flex h-full w-full items-center justify-center">
             {currentItem?.type === 'IMAGE' ? (
-              <div className="relative w-full aspect-video">
+              <div className="relative aspect-video w-full">
                 <Image
                   src={currentItem?.url}
                   alt=""
@@ -112,10 +119,10 @@ export function MediaCarousel({ media, initialIndex, open, onOpenChange }: Media
                 />
               </div>
             ) : (
-              <div className="w-full aspect-video">
+              <div className="aspect-video w-full">
                 <video
                   src={currentItem?.url}
-                  className="w-full h-full"
+                  className="h-full w-full"
                   controls
                   playsInline
                 />
@@ -125,10 +132,10 @@ export function MediaCarousel({ media, initialIndex, open, onOpenChange }: Media
         </div>
 
         {/* Optional: Add counter */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-background/80 px-2 py-1 rounded-full text-sm">
+        <div className="bg-background/80 absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full px-2 py-1 text-sm">
           {currentIndex + 1} / {media.length}
         </div>
       </DialogContent>
     </Dialog>
   );
-} 
+}

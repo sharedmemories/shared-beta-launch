@@ -1,16 +1,13 @@
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { getAnalyticsData } from './get-analytics-data';
 import { AnalyticsDashboard } from './analytics-dashboard';
 import { EventMetrics } from './event-metrics';
 import { StorageMetrics } from './storage-metrics';
 import { UploadChart } from './upload-chart';
+import { getCachedSession } from '@/lib/auth-utils';
 
 export default async function AnalyticsPage() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session) {
     redirect('/');

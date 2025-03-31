@@ -12,7 +12,7 @@ import { polarPlans } from '@/lib/data/pricing-data';
 import { authClient } from '@/lib/auth-client';
 
 export function SubscribeDialog() {
-  const { data: session } = authClient.useSession();
+  const { data: session } = authClient.useSession(); 
   return (
     <Dialog>
       <DialogTrigger className='cursor-pointer w-full' >

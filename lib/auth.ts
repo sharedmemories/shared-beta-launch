@@ -36,6 +36,7 @@ export const auth = betterAuth({
       maxAge: 5 * 60, // Cache duration in seconds
     },
   },
+  trustedOrigins: ['https://094f-41-56-183-157.ngrok-free.app'],
   plugins: [
     admin(),
     emailOTP({

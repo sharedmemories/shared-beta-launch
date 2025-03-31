@@ -1,12 +1,11 @@
 import React from 'react';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { fetchEvent } from './fetch-event';
 import { redirect } from 'next/navigation';
 import { EventHeader } from './event-header';
 import { ShareOptions } from './share-options';
 import { GalleryGrid } from '@/components/dashboard/gallery-grid';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { getCachedSession } from '@/lib/auth-utils';
 
 export default async function EventPage({
   params,
@@ -15,9 +14,7 @@ export default async function EventPage({
 }) {
   const resolvedParams = await params;
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session) {
     redirect('/');

@@ -12,8 +12,7 @@ export default function AuthDialog() {
     <Dialog open={isAuthDialogOpen} onOpenChange={closeAuthDialog}>
       <DialogContent>
         <DialogTitle className="sr-only">Sign in</DialogTitle>
-
-        <SignInFlow />
+        <SignInFlow onAuthSuccess={closeAuthDialog} />
       </DialogContent>
     </Dialog>
   );

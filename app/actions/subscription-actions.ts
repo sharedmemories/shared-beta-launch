@@ -1,9 +1,8 @@
 'use server';
 
-import { auth } from '@/lib/auth';
+import { getCachedSession } from '@/lib/auth-utils';
 import { polarApi } from '@/lib/polar';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
 
 interface SubscriptionStatus {
   hasActiveSubscription: boolean;
@@ -12,9 +11,7 @@ interface SubscriptionStatus {
 }
 
 export async function getPolarSubscription(): Promise<SubscriptionStatus> {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   try {
     if (!session?.user?.id) {

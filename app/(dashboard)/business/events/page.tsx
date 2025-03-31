@@ -1,13 +1,12 @@
 import { Suspense } from 'react';
 import { EventsList } from './events-list';
-import { EventsSearch } from './events-search';
-import { DashboardShell } from '@/components/dashboard/dash-shell';
-import { DashboardTitleHeader } from '@/components/dashboard/dash-title-header';
-import { DashboardSkeleton } from '@/components/dashboard/dash-skeleton';
-import { CreateEventDialog } from '../../../../components/dashboard/create-event-dialog';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
+import { EventsSearch } from './events-search';
+import { getCachedSession } from '@/lib/auth-utils';
+import { DashboardShell } from '@/components/dashboard/dash-shell';
+import { DashboardSkeleton } from '@/components/dashboard/dash-skeleton';
+import { DashboardTitleHeader } from '@/components/dashboard/dash-title-header';
+import { CreateEventDialog } from '../../../../components/dashboard/create-event-dialog';
 
 // `dynamic = 'force-dynamic'` and `revalidate = 0` to ensure the page is always up-to-date
 export const dynamic = 'force-dynamic';
@@ -16,19 +15,17 @@ export const revalidate = 0;
 export default async function EventsPage({
   searchParams,
 }: {
-  searchParams: { page?: string; search?: string };
+  searchParams: Promise<{ page?: string; search?: string }>;
 }) {
+  const resolvedSearchParams = await searchParams;
+  const session = await getCachedSession();
 
-  const session = await auth.api.getSession({
-      headers: await headers(),
-    });
-  
-    if (!session?.user?.id) {
-      redirect('/');
-    }
-    
-  const page = Number(searchParams.page) || 1;
-  const search = searchParams.search || '';
+  if (!session) {
+    redirect('/');
+  }
+
+  const page = Number(resolvedSearchParams.page) || 1;
+  const search = resolvedSearchParams.search || '';
 
   return (
     <DashboardShell>
@@ -36,7 +33,7 @@ export default async function EventsPage({
         heading="Events"
         text="Create and manage your events for your clients."
       >
-        <div className="flex flex-col sm:flex-row items-center justify-end gap-2 w-full">
+        <div className="flex w-full flex-col items-center justify-end gap-2 sm:flex-row">
           <div className="w-full sm:w-auto">
             <EventsSearch />
           </div>
@@ -47,7 +44,6 @@ export default async function EventsPage({
       </DashboardTitleHeader>
       <div className="w-full overflow-x-auto">
         <Suspense fallback={<DashboardSkeleton />}>
-          {/* @ts-expect-error Async Server Component */}
           <EventsList page={page} search={search} />
         </Suspense>
       </div>

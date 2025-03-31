@@ -1,6 +1,6 @@
-import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import SideBar from '../../../components/dashboard/side-bar';
 import DashHeader from '../../../components/dashboard/dash-header';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 
 import BusinessRoutes from './business-routes';
 

@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  AlignVerticalJustifyStart,
-  LayoutGrid,
-  Users,
-} from 'lucide-react';
+import { AlignVerticalJustifyStart, LayoutGrid, Users } from 'lucide-react';
 import {
   SidebarGroup,
   SidebarMenu,
@@ -12,7 +8,8 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-
+import { LiaMoneyBillWaveSolid } from 'react-icons/lia';
+import { CustomerPortalURL } from '@/components/dashboard/customer-portal-link';
 
 const data = {
   mainNav: [
@@ -53,7 +50,7 @@ export default function BusinessRoutes() {
       <SidebarMenu>
         <SidebarMenuSubItem>
           <SidebarMenuSubButton>
-            {/* <Receipt /> <BillingPortalButton /> */}
+            <LiaMoneyBillWaveSolid /> <CustomerPortalURL />
           </SidebarMenuSubButton>
         </SidebarMenuSubItem>
       </SidebarMenu>

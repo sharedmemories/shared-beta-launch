@@ -53,19 +53,16 @@ export default function HeroUseCase({
             {!session ? (
               <Button onClick={openAuthDialog}>Create your event</Button>
             ) : (
-             
-                <Link
-                  href="/create-album"
-                  className="w-full rounded-md bg-white px-8 py-3 text-gray-900 transition-colors hover:bg-gray-100 sm:w-auto"
-                >
-                  Create your event
-                </Link>
-             
+              <Link
+                href="/create-album"
+                className="w-full rounded-md bg-white px-8 py-3 text-gray-900 transition-colors hover:bg-gray-100 sm:w-auto"
+              >
+                Create your event
+              </Link>
             )}
 
             <Link
               href="/use-cases/weddings/gallery"
-              prefetch
               className="w-full rounded-md border border-white bg-transparent px-8 py-3 text-white transition-colors hover:bg-white/10 sm:w-auto"
             >
               View sample gallery

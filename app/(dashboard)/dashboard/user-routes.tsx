@@ -19,7 +19,6 @@ import {
 import {
   Calendar,
   CameraIcon,
-  // ChartColumn,
   ChevronRight,
   Contact,
   LayoutGrid,
@@ -30,7 +29,6 @@ import {
 } from 'lucide-react';
 import { MembershipRoutes } from './membership-routes';
 import Link from 'next/link';
-import { SubscribeDialog } from './subscribe-dialog';
 import { CustomerPortalURL } from '@/components/dashboard/customer-portal-link';
 import { useSubscriptionStatus } from '@/hooks/use-subscription-status';
 import { cn } from '@/lib/utils';
@@ -79,8 +77,7 @@ const data = {
 };
 
 export default function DashUserRoutes() {
-  const { hasActiveSubscription, isLoading, subscriptionPlan } =
-    useSubscriptionStatus();
+  const { hasActiveSubscription, subscriptionPlan } = useSubscriptionStatus();
 
   const isBusinessSubscription =
     subscriptionPlan === 'BUSINESS' && hasActiveSubscription;
@@ -121,13 +118,14 @@ export default function DashUserRoutes() {
             <SidebarMenuSubItem>
               <SidebarMenuSubButton
                 className={cn(
-                  'border-primary text-purple-800 from-primary/10',
+                  'border-primary from-primary/10 text-purple-800',
                   'to-primary/20 hover:from-primary/20 hover:to-primary/30',
                   'w-full rounded-full border bg-gradient-to-r',
                   'px-4 py-4 text-start transition-all hover:bg-gradient-to-r'
                 )}
+                href="/#pricing"
               >
-                <SubscribeDialog />
+                Subscribe
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>
           </SidebarMenu>
@@ -139,7 +137,14 @@ export default function DashUserRoutes() {
           <SidebarGroupLabel>Business</SidebarGroupLabel>
           <SidebarMenu>
             <SidebarMenuSubItem>
-              <SidebarMenuSubButton>
+              <SidebarMenuSubButton
+                className={cn(
+                  'border-primary from-primary/10 text-purple-800',
+                  'to-primary/20 hover:from-primary/20 hover:to-primary/30',
+                  'w-full rounded-full border bg-gradient-to-r',
+                  'px-4 py-4 text-start transition-all hover:bg-gradient-to-r'
+                )}
+              >
                 <BriefcaseBusiness />{' '}
                 <Link href="/business">Business Portal</Link>
               </SidebarMenuSubButton>

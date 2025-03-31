@@ -1,4 +1,5 @@
-import MediaGrid from '@/components/common/media-grid';
+import UseCaseMediaGrid from "@/components/common/use-media-grid";
+
 const photos = [
   {
     id: 1,
@@ -59,7 +60,7 @@ const photos = [
 
 export default function CorporateEventsGallery() {
   return (
-    <MediaGrid
+    <UseCaseMediaGrid
       photos={photos}
       title="Digital Marketing Conference"
       description="Europe's leading digital marketing conference"

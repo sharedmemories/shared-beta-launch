@@ -84,7 +84,7 @@ export default function PricingUseCase({ session }: PricingUseCaseProps) {
                   </p>
                   <p>
                     Discover more and compare plans on our{' '}
-                    <Link href="/#pricing" prefetch className="text-purple-600">
+                    <Link href="/#pricing" className="text-purple-600">
                       pricing page
                     </Link>
                     .

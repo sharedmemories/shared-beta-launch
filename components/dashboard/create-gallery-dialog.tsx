@@ -64,7 +64,7 @@ export function CreateGalleryDialog({
       toast(result.message);
 
       setIsOpen(false); // Close the dialog
-    } catch (error) {
+    } catch {
       toast('Something went wrong');
     } finally {
       setIsLoading(false);

@@ -1,11 +1,9 @@
-import { prisma } from "@/lib/prisma"
-import { auth } from "@/lib/auth"
-import { headers } from 'next/headers';
+import { prisma } from '@/lib/prisma';
 import { redirect } from 'next/navigation';
+import { getCachedSession } from '../auth-utils';
+
 export async function getBusinessClients() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session?.user?.id) {
     redirect('/');
@@ -19,9 +17,9 @@ export async function getBusinessClients() {
     include: {
       organization: true,
     },
-  })
+  });
 
-  if (!member) throw new Error("No organization found")
+  if (!member) throw new Error('No organization found');
 
   // Get all members of the organization with their details
   const members = await prisma.member.findMany({
@@ -57,7 +55,7 @@ export async function getBusinessClients() {
         },
       },
     },
-  })
+  });
 
   // Transform the data to match our Client type
   return members.map((member) => ({
@@ -71,5 +69,5 @@ export async function getBusinessClients() {
     subscriptionPlan: member.user.subscriptions[0]?.type || 'FREE',
     subscriptionStatus: member.user.subscriptions[0]?.status || 'INACTIVE',
     lastActive: member.user.sessions[0]?.createdAt || member.user.createdAt,
-  }))
-} 
+  }));
+}

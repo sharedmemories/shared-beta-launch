@@ -100,7 +100,7 @@ export function CreateEventDialog({
         toast('Success');
 
         handleOpenChange(false);
-      } catch (error) {
+      } catch {
         toast('Something went wrong');
       } finally {
         setDataLoading(false);

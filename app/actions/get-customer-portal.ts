@@ -1,14 +1,11 @@
 'use server';
 
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { polarApi } from '@/lib/polar';
-import { headers } from 'next/headers';
+import { getCachedSession } from '@/lib/auth-utils';
 
 export async function getCustomerPortalLink() {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   try {
     if (!session?.user?.id) {

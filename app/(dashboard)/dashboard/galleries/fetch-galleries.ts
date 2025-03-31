@@ -1,7 +1,6 @@
-import { Prisma } from '@prisma/client';
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
+import { Prisma } from '@prisma/client';
+import { getCachedSession } from '@/lib/auth-utils';
 
 type FetchGalleriesArgs = {
   page: number;
@@ -9,9 +8,7 @@ type FetchGalleriesArgs = {
 };
 
 export async function fetchGalleries({ page, search }: FetchGalleriesArgs) {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
 
   if (!session?.user?.id) {
     throw new Error('Unauthorized');
@@ -44,12 +41,12 @@ export async function fetchGalleries({ page, search }: FetchGalleriesArgs) {
       where,
       include: {
         _count: {
-          select: { 
+          select: {
             media: {
               where: {
-                status: 'APPROVED'
-              }
-            } 
+                status: 'APPROVED',
+              },
+            },
           },
         },
         event: {

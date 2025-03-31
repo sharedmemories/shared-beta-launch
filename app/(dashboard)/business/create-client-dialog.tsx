@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import {
   Dialog,
   DialogContent,
@@ -7,14 +8,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Loader2, PlusIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Loader2, PlusIcon } from 'lucide-react';
 import { organization } from '@/lib/auth-client';
-import { toast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 
 export function CreateClientDialog() {
   const [name, setName] = useState('');
@@ -59,7 +59,7 @@ export function CreateClientDialog() {
           <p>New Client</p>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px] w-11/12">
+      <DialogContent className="w-11/12 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>New Client</DialogTitle>
           <DialogDescription>
@@ -94,7 +94,7 @@ export function CreateClientDialog() {
                 <Image
                   src={logo}
                   alt="Logo preview"
-                  className="w-16 h-16 object-cover"
+                  className="h-16 w-16 object-cover"
                   width={16}
                   height={16}
                 />
@@ -118,15 +118,11 @@ export function CreateClientDialog() {
                     setLoading(false);
                   },
                   onSuccess: () => {
-                    toast({
-                      title: 'Client created successfully',
-                    });
+                    toast('Client created successfully');
                     setOpen(false);
                   },
                   onError: (error: unknown) => {
-                    toast({
-                      title: `${error}`,
-                    });
+                    toast(`${error}`);
                     setLoading(false);
                   },
                 }

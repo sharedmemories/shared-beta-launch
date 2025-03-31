@@ -21,9 +21,9 @@ import {
   deleteMedia,
 } from '@/app/actions/media-actions';
 import { toast } from 'sonner';
-import { MediaCarousel } from './media-carousel';
+import { MediaCarousel } from '../../../../components/common/media-carousel';
 
-interface MediaGridProps {
+interface DashMediaGridProps {
   media: {
     id: string;
     url: string;
@@ -38,7 +38,7 @@ interface MediaGridProps {
   hidePending?: boolean;
 }
 
-export function MediaGrid({ media, hidePending }: MediaGridProps) {
+export function DashMediaGrid({ media, hidePending }: DashMediaGridProps) {
   const router = useRouter();
   const [loading, setLoading] = useState<{ [key: string]: boolean }>({});
   const [selectedMedia, setSelectedMedia] = useState<Set<string>>(new Set());

@@ -29,16 +29,16 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
-import { toast } from '@/hooks/use-toast';
 import { Loader2 } from 'lucide-react';
 import { formatBytes } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
-import { 
-  updateProfile, 
-  changePassword, 
+import {
+  updateProfile,
+  changePassword,
   // updateSettings,
-  getProfileData 
+  getProfileData,
 } from '@/app/actions/profile-actions';
+import { toast } from 'sonner';
 // import { BillingPortalButton } from '@/components/dashboard/stripe-routes';
 
 // Schema definitions
@@ -49,8 +49,13 @@ const profileSchema = z.object({
 
 const passwordSchema = z.object({
   currentPassword: z.string().min(8, 'Password must be at least 8 characters'),
-  newPassword: z.string().min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain at least one uppercase letter, one lowercase letter, and one number'),
+  newPassword: z
+    .string()
+    .min(8, 'Password must be at least 8 characters')
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+      'Password must contain at least one uppercase letter, one lowercase letter, and one number'
+    ),
 });
 
 const settingsSchema = z.object({
@@ -69,19 +74,32 @@ const PLAN_FEATURES = {
   PRO: {
     name: 'Pro',
     storage: 50, // GB
-    features: ['Advanced analytics', '50 GB storage', 'Priority support', 'Custom branding'],
+    features: [
+      'Advanced analytics',
+      '50 GB storage',
+      'Priority support',
+      'Custom branding',
+    ],
   },
   BUSINESS: {
     name: 'Business',
     storage: 100, // GB
-    features: ['Enterprise features', '100 GB storage', '24/7 support', 'API access', 'Custom integrations'],
+    features: [
+      'Enterprise features',
+      '100 GB storage',
+      '24/7 support',
+      'API access',
+      'Custom integrations',
+    ],
   },
 } as const;
 
 export default function ProfileSettingsPage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = React.useState(true);
-  const [profileData, setProfileData] = React.useState<Awaited<ReturnType<typeof getProfileData>> | null>(null);
+  const [profileData, setProfileData] = React.useState<Awaited<
+    ReturnType<typeof getProfileData>
+  > | null>(null);
 
   // Initialize forms
   const profileForm = useForm<z.infer<typeof profileSchema>>({
@@ -115,13 +133,13 @@ export default function ProfileSettingsPage() {
       try {
         const data = await getProfileData();
         setProfileData(data);
-        
+
         // Update form defaults
         profileForm.reset({
           name: data.user.name,
           email: data.user.email,
         });
-        
+
         settingsForm.reset({
           theme: data.settings.theme as 'light' | 'dark' | 'system',
           emailNotifications: data.settings.emailNotifications,
@@ -129,36 +147,28 @@ export default function ProfileSettingsPage() {
         });
       } catch (error) {
         console.error('Error loading profile data:', error);
-        toast({
-          title: 'Error',
-          description: 'Failed to load profile data',
-          variant: 'destructive',
-        });
+        toast('Failed to load profile data');
       } finally {
         setIsLoading(false);
       }
     }
 
     loadProfileData();
-  }, []);
+  }, [profileForm, settingsForm]);
 
   // Form submission handlers
   const onProfileSubmit = async (data: z.infer<typeof profileSchema>) => {
     try {
       const result = await updateProfile(data);
       if (result.success) {
-        toast({ title: result.message });
+        toast(result.message);
         router.refresh();
       } else {
-        toast({ title: 'Error', description: result.message, variant: 'destructive' });
+        toast(result.message);
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update profile',
-        variant: 'destructive',
-      });
+      toast('Failed to update profile');
     }
   };
 
@@ -166,18 +176,14 @@ export default function ProfileSettingsPage() {
     try {
       const result = await changePassword(data);
       if (result.success) {
-        toast({ title: result.message });
+        toast(result.message);
         passwordForm.reset();
       } else {
-        toast({ title: 'Error', description: result.message, variant: 'destructive' });
+        toast(result.message);
       }
     } catch (error) {
       console.error('Error changing password:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to change password',
-        variant: 'destructive',
-      });
+      toast('Failed to change password');
     }
   };
 
@@ -202,7 +208,7 @@ export default function ProfileSettingsPage() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="flex min-h-screen items-center justify-center">
         <Loader2 className="h-8 w-8 animate-spin" />
       </div>
     );
@@ -215,7 +221,7 @@ export default function ProfileSettingsPage() {
   const storagePercentage = Math.min((storageUsed / storageLimit) * 100, 100);
 
   return (
-    <div className="container mx-auto py-10 space-y-8">
+    <div className="container mx-auto space-y-8 py-10">
       <h1 className="text-3xl font-bold">Profile Settings</h1>
 
       {/* Profile Information */}
@@ -263,7 +269,7 @@ export default function ProfileSettingsPage() {
               <Button
                 type="submit"
                 disabled={profileForm.formState.isSubmitting}
-                className="bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors"
+                className="bg-purple-600 text-white transition-colors hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
               >
                 {profileForm.formState.isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -418,7 +424,7 @@ export default function ProfileSettingsPage() {
               <Button
                 type="submit"
                 disabled={passwordForm.formState.isSubmitting}
-                className="bg-purple-600 text-white hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600 transition-colors"
+                className="bg-purple-600 text-white transition-colors hover:bg-purple-700 dark:bg-purple-500 dark:hover:bg-purple-600"
               >
                 {passwordForm.formState.isSubmitting && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
@@ -439,14 +445,14 @@ export default function ProfileSettingsPage() {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          <div className="flex justify-between items-start">
+          <div className="flex items-start justify-between">
             <div>
-              <h3 className="font-medium text-lg">{planDetails.name} Plan</h3>
+              <h3 className="text-lg font-medium">{planDetails.name} Plan</h3>
               <ul className="mt-2 space-y-2">
                 {planDetails.features.map((feature, index) => (
                   <li
                     key={index}
-                    className="text-sm text-muted-foreground flex items-center"
+                    className="text-muted-foreground flex items-center text-sm"
                   >
                     <span className="mr-2">•</span>
                     {feature}
@@ -458,16 +464,16 @@ export default function ProfileSettingsPage() {
           </div>
 
           <div className="space-y-2">
-            <div className="flex justify-between items-center">
+            <div className="flex items-center justify-between">
               <h3 className="font-medium">Storage Used</h3>
-              <span className="text-sm text-muted-foreground">
+              <span className="text-muted-foreground text-sm">
                 {formatBytes(storageUsed * 1024 * 1024 * 1024)} of{' '}
                 {storageLimit} GB
               </span>
             </div>
-            <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
+            <div className="bg-secondary h-2 w-full overflow-hidden rounded-full">
               <div
-                className="h-full bg-primary transition-all duration-300"
+                className="bg-primary h-full transition-all duration-300"
                 style={{ width: `${storagePercentage}%` }}
               />
             </div>

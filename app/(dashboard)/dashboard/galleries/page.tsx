@@ -1,8 +1,7 @@
 import { Suspense } from 'react';
-import { auth } from '@/lib/auth';
-import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { fetchGalleries } from './fetch-galleries';
+import { getCachedSession } from '@/lib/auth-utils';
 import { GallerySearchForm } from './gallery-search';
 import { GalleryPagination } from './gallery-pagination';
 import { GalleryGrid } from '@/components/dashboard/gallery-grid';
@@ -11,7 +10,7 @@ import { EmptyPlaceholder } from '@/components/dashboard/empty-placeholder';
 import { DashboardTitleHeader } from '@/components/dashboard/dash-title-header';
 
 interface GalleriesPageProps {
-  searchParams: { search?: string; page?: string };
+  searchParams: Promise<{ search?: string; page?: string }>;
 }
 
 export default async function GalleriesPage({
@@ -19,9 +18,8 @@ export default async function GalleriesPage({
 }: GalleriesPageProps) {
   const resolvedSearchParams = await searchParams;
 
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const session = await getCachedSession();
+
   if (!session?.user?.id) {
     redirect('/');
   }

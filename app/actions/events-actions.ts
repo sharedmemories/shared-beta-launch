@@ -1,10 +1,9 @@
 'use server';
 
 import { nanoid } from 'nanoid';
-import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { headers } from 'next/headers';
 import { revalidatePath } from 'next/cache';
+import { getCachedSession } from '@/lib/auth-utils';
 import { eventSchema } from '@/lib/validations/events';
 import { getPolarSubscription } from './subscription-actions';
 
@@ -12,9 +11,7 @@ export async function createEvent(
   formData: FormData
 ): Promise<{ success: boolean; message: string }> {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getCachedSession()
 
     const subscription = await getPolarSubscription();
     const hasSub = subscription.hasActiveSubscription;

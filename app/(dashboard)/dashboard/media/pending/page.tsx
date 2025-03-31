@@ -1,5 +1,5 @@
 import React from 'react';
-import { MediaGrid } from '../media-grid';
+import { DashMediaGrid } from '../dash-media-grid';
 import { fetchPendingMedia } from '../fetch-media';
 import { EmptyPlaceholder } from '@/components/dashboard/empty-placeholder';
 
@@ -27,7 +27,7 @@ export default async function PendingMediaPage() {
             </EmptyPlaceholder.Description>
           </EmptyPlaceholder>
         ) : (
-          <MediaGrid media={pendingMedia} />
+          <DashMediaGrid media={pendingMedia} />
         )}
       </div>
     </div>

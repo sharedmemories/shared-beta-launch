@@ -1,6 +1,7 @@
 'use server';
 
 import { auth } from '@/lib/auth';
+import { getCachedSession } from '@/lib/auth-utils';
 import { prisma } from '@/lib/prisma';
 import { headers } from 'next/headers';
 import { z } from 'zod';
@@ -31,9 +32,7 @@ const settingsSchema = z.object({
 
 export async function updateProfile(data: z.infer<typeof profileSchema>) {
   try {
-    const session = await auth.api.getSession({
-      headers: await headers(),
-    });
+    const session = await getCachedSession();
 
     if (!session?.user?.id) {
       return { success: false, message: 'Unauthorized' };
