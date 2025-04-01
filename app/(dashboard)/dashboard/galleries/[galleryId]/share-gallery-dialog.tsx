@@ -37,7 +37,7 @@ export function ShareGalleryDialog({
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast('The code has been copied to your clipboard.');
+    toast.success('The code has been copied to your clipboard.');
   };
 
   return (

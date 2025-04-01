@@ -60,13 +60,13 @@ export function DashMediaGrid({ media, hidePending }: DashMediaGridProps) {
           : await rejectMedia(mediaId);
 
       if (result.success) {
-        toast(result.message);
+        toast.success(result.message);
         router.refresh();
       } else {
         throw new Error(result.message);
       }
     } catch (error) {
-      toast(`There was an error ${action}ing the media: ${error}`);
+      toast.error(`There was an error ${action}ing the media: ${error}`);
     } finally {
       setLoading((prev) => ({ ...prev, [mediaId]: false }));
     }
@@ -86,7 +86,7 @@ export function DashMediaGrid({ media, hidePending }: DashMediaGridProps) {
 
   const handleDelete = async () => {
     if (deleteConfirmText.toLowerCase() !== 'delete') {
-      toast('Please type "delete" to confirm');
+      toast.warning('Please type "delete" to confirm');
       return;
     }
 
@@ -102,7 +102,7 @@ export function DashMediaGrid({ media, hidePending }: DashMediaGridProps) {
       const result = await deleteMedia(Array.from(selectedMedia));
 
       if (result.success) {
-        toast(
+        toast.success(
           result.message || `${selectedMedia.size} items deleted successfully`
         );
         setSelectedMedia(new Set());
@@ -111,7 +111,7 @@ export function DashMediaGrid({ media, hidePending }: DashMediaGridProps) {
         throw new Error(result.message);
       }
     } catch (error) {
-      toast(`There was an error deleting the media: ${error}`);
+      toast.error(`There was an error deleting the media: ${error}`);
     } finally {
       setLoading((prev) => {
         const newLoading = { ...prev };

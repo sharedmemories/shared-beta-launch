@@ -147,7 +147,7 @@ export default function ProfileSettingsPage() {
         });
       } catch (error) {
         console.error('Error loading profile data:', error);
-        toast('Failed to load profile data');
+        toast.error('Failed to load profile data');
       } finally {
         setIsLoading(false);
       }
@@ -161,14 +161,14 @@ export default function ProfileSettingsPage() {
     try {
       const result = await updateProfile(data);
       if (result.success) {
-        toast(result.message);
+        toast.success(result.message);
         router.refresh();
       } else {
-        toast(result.message);
+        toast.info(result.message);
       }
     } catch (error) {
       console.error('Error updating profile:', error);
-      toast('Failed to update profile');
+      toast.error('Failed to update profile');
     }
   };
 
@@ -176,35 +176,16 @@ export default function ProfileSettingsPage() {
     try {
       const result = await changePassword(data);
       if (result.success) {
-        toast(result.message);
+        toast.success(result.message);
         passwordForm.reset();
       } else {
-        toast(result.message);
+        toast.info(result.message);
       }
     } catch (error) {
       console.error('Error changing password:', error);
-      toast('Failed to change password');
+      toast.error('Failed to change password');
     }
   };
-
-  // const onSettingsSubmit = async (data: z.infer<typeof settingsSchema>) => {
-  //   try {
-  //     const result = await updateSettings(data);
-  //     if (result.success) {
-  //       toast({ title: result.message });
-  //       router.refresh();
-  //     } else {
-  //       toast({ title: 'Error', description: result.message, variant: 'destructive' });
-  //     }
-  //   } catch (error) {
-  //     console.error('Error updating settings:', error);
-  //     toast({
-  //       title: 'Error',
-  //       description: 'Failed to update settings',
-  //       variant: 'destructive',
-  //     });
-  //   }
-  // };
 
   if (isLoading) {
     return (

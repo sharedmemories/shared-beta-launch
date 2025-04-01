@@ -69,7 +69,7 @@ export default function SignInFlow({
           setRetryAfter(resetAfter);
           setRetryCountdown(resetAfter);
 
-          toast(
+          toast.warning(
             `Too many attempts. Please try again in ${resetAfter} seconds.`
           );
           return;
@@ -84,7 +84,7 @@ export default function SignInFlow({
 
       if (error) {
         console.error('Error sending OTP:', error);
-        toast(
+        toast.error(
           'There was an error sending the verification code. Please try again.'
         );
         return;
@@ -92,10 +92,10 @@ export default function SignInFlow({
 
       // Move to OTP verification step
       setStep('otp');
-      toast('Check your email for the verification code.');
+      toast.info('Check your email for the verification code.');
     } catch (error) {
       console.error('Error sending OTP:', error);
-      toast('An unexpected error occurred. Please try again later.');
+      toast.error('An unexpected error occurred. Please try again later.');
     } finally {
       setIsSending(false);
     }
@@ -123,7 +123,7 @@ export default function SignInFlow({
           const resetAfter = Math.ceil(
             (rateLimitData.reset - Date.now()) / 1000
           );
-          toast(
+          toast.warning(
             `Verification limit exceeded. Please try again in ${resetAfter} seconds.`
           );
           return;
@@ -138,18 +138,18 @@ export default function SignInFlow({
 
       if (error) {
         console.error('Error verifying OTP:', error);
-        toast('Invalid or expired code. Please try again.');
+        toast.error('Invalid or expired code. Please try again.');
         return;
       }
 
-      toast('You have successfully signed in.');
+      toast.success('You have successfully signed in.');
 
       // Redirect to dashboard  page after successful sign-in
       router.push('/dashboard');
       onAuthSuccess();
     } catch (error) {
       console.error('Error verifying OTP:', error);
-      toast('An unexpected error occurred. Please try again later.');
+      toast.error('An unexpected error occurred. Please try again later.');
     }
   };
 
@@ -175,7 +175,7 @@ export default function SignInFlow({
           const resetAfter = Math.ceil(
             (rateLimitData.reset - Date.now()) / 1000
           );
-          toast(
+          toast.warning(
             `Too many attempts. Please try again in ${resetAfter} seconds.`
           );
           return;
@@ -190,16 +190,16 @@ export default function SignInFlow({
 
       if (error) {
         console.error('Error resending OTP:', error);
-        toast(
+        toast.error(
           'There was an error sending the verification code. Please try again.'
         );
         return;
       }
 
-      toast('A new verification code has been sent to your email.');
+      toast.success('A new verification code has been sent to your email.');
     } catch (error) {
       console.error('Error resending OTP:', error);
-      toast('An unexpected error occurred. Please try again later.');
+      toast.error('An unexpected error occurred. Please try again later.');
     }
   };
 

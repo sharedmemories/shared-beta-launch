@@ -219,7 +219,7 @@ export function ClientCard({ session, activeOrganization }: ClientCardProps) {
                                   setIsRevoking([...isRevoking, invitation.id]);
                                 },
                                 onSuccess: () => {
-                                  toast('Invitation revoked successfully');
+                                  toast.success('Invitation revoked successfully');
 
                                   setIsRevoking(
                                     isRevoking.filter(
@@ -237,7 +237,7 @@ export function ClientCard({ session, activeOrganization }: ClientCardProps) {
                                 onError: (ctx: {
                                   error: { message: string };
                                 }) => {
-                                  toast(ctx.error.message);
+                                  toast.error(ctx.error.message);
                                   setIsRevoking(
                                     isRevoking.filter(
                                       (id) => id !== invitation.id

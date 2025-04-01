@@ -94,14 +94,14 @@ export function CreateEventDialog({
         const result = await createEvent(formData);
 
         if (!result.success) {
-          toast(result.message || 'Failed to create event');
+          toast.error(result.message || 'Failed to create event');
         }
 
-        toast('Success');
+        toast.success('Success');
 
         handleOpenChange(false);
       } catch {
-        toast('Something went wrong');
+        toast.info('Something went wrong');
       } finally {
         setDataLoading(false);
       }

@@ -58,7 +58,7 @@ export default function OtpVerification({
       setAttempts(newAttempts);
 
       if (newAttempts === MAX_ATTEMPTS - 1) {
-        toast('You have 1 attempt remaining before temporary lockout.');
+        toast.warning('You have 1 attempt remaining before temporary lockout.');
       }
 
       await onVerify(otp);

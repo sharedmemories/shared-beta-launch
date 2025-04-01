@@ -15,11 +15,11 @@ export function CustomerPortalURL() {
       if (result.success && result.url) {
         window.location.href = result.url;
       } else {
-        toast(result.message || 'Could not open billing portal');
+        toast.success(result.message || 'Could not open billing portal');
       }
     } catch (error) {
       console.error('Unexpected error:', error);
-      toast('An unexpected error occurred. Please try again.');
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }

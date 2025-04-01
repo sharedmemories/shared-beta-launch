@@ -1,12 +1,12 @@
-import "./globals.css";
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import { siteConfig } from "@/lib/site-config";
-import Providers from "@/components/common/providers";
-import AuthDialog from "@/components/auth/auth-dialog";
-import { Toaster } from "sonner";
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { siteConfig } from '@/lib/site-config';
+import Providers from '@/components/common/providers';
+import AuthDialog from '@/components/auth/auth-dialog';
+import { Toaster } from '@/components/ui/sonner';
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: {
@@ -17,13 +17,13 @@ export const metadata: Metadata = {
   keywords: siteConfig.keywords,
   authors: [
     {
-      name: "Shared Memories",
-      url: "sharedmemories.app",
+      name: 'Shared Memories',
+      url: 'sharedmemories.app',
     },
   ],
   openGraph: {
-    type: "website",
-    locale: "en_US",
+    type: 'website',
+    locale: 'en_US',
     url: siteConfig.url,
     title: siteConfig.name,
     description: siteConfig.description,
@@ -43,7 +43,7 @@ export default async function RootLayout({
           {children}
           <AuthDialog />
         </Providers>
-        <Toaster />
+        <Toaster richColors />
       </body>
     </html>
   );

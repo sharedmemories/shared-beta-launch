@@ -118,11 +118,11 @@ export function CreateClientDialog() {
                     setLoading(false);
                   },
                   onSuccess: () => {
-                    toast('Client created successfully');
+                    toast.success('Client created successfully');
                     setOpen(false);
                   },
                   onError: (error: unknown) => {
-                    toast(`${error}`);
+                    toast.error(`${error}`);
                     setLoading(false);
                   },
                 }

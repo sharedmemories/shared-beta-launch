@@ -96,13 +96,13 @@ export function MediaUpload({
 
   const handleUpload = async () => {
     if (!selectedGallery) {
-      toast('Please select a gallery first');
+      toast.warning('Please select a gallery first');
       return;
     }
 
     const selectedFiles = uploadingFiles.filter((file) => file.selected);
     if (selectedFiles.length === 0) {
-      toast('Please select at least one file to upload');
+      toast.error('Please select at least one file to upload');
       return;
     }
 
@@ -171,12 +171,12 @@ export function MediaUpload({
         );
       }
 
-      toast('Files uploaded successfully');
+      toast.success('Files uploaded successfully');
 
       clearFiles();
     } catch (error) {
       console.error('Upload error:', error);
-      toast('Upload failed');
+      toast.error('Upload failed');
     } finally {
       setIsUploading(false);
     }

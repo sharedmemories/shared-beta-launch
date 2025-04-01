@@ -46,10 +46,10 @@ export function DeleteGalleryDialog({
     setIsDeleting(false);
 
     if (result.success) {
-      toast(result.message);
+      toast.success(result.message);
       router.push('/dashboard/galleries');
     } else {
-      toast(result.message);
+      toast.error(result.message);
     }
   };
 

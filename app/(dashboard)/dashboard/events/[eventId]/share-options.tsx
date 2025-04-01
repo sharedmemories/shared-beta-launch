@@ -33,10 +33,10 @@ export function ShareOptions({
   const copyToClipboard = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast('The link has been copied to your clipboard.');
+      toast.success('The link has been copied to your clipboard.');
     } catch (err) {
       console.error(err);
-      toast('Please try again.');
+      toast.error('Please try again.');
     }
   };
 

@@ -58,14 +58,14 @@ export function CreateGalleryDialog({
       const result = await createGallery(formData);
 
       if (!result.success) {
-        toast('Failed to create gallery');
+        toast.error('Failed to create gallery');
       }
 
-      toast(result.message);
+      toast.success(result.message);
 
       setIsOpen(false); // Close the dialog
     } catch {
-      toast('Something went wrong');
+      toast.info('Something went wrong');
     } finally {
       setIsLoading(false);
     }
