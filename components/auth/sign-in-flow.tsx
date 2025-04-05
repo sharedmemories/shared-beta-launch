@@ -232,7 +232,7 @@ export default function SignInFlow({
 
       <Button
         variant="outline"
-        className="mb-6 flex w-full items-center justify-center gap-2"
+        className="mb-6 flex w-full items-center cursor-pointer justify-center gap-2"
         onClick={async () => {
           await signIn.social({
             provider: 'google',

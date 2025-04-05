@@ -71,7 +71,7 @@ export function DashboardContent({
 }: DashboardContentProps) {
   const storageLimit = 10;
   const isLowStorage = storageUsed > storageLimit * 0.8;
-  const [open, setOpen] = useState(false);
+
 
   return (
     <DashboardShell>
@@ -87,18 +87,12 @@ export function DashboardContent({
 
       {/* Quick Actions */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card
-          className="hover:bg-sidebar-accent cursor-pointer"
-          onClick={() => setOpen(true)}
-        >
+        <Card className="hover:bg-sidebar-accent ">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Create Event</CardTitle>
             <Plus className="text-muted-foreground h-4 w-4" />
-            {open && (
-              <div style={{ display: 'none' }}>
-                <CreateEventDialog openDialogBox={open} />
-              </div>
-            )}
+
+            <CreateEventDialog />
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground text-xs">

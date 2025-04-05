@@ -1,3 +1,6 @@
+'use client';
+
+
 import { Spinner } from './spinner';
 import { cn } from '@/lib/utils';
 

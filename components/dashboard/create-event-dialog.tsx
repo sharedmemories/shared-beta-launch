@@ -27,19 +27,12 @@ import { ControllerRenderProps, useForm } from 'react-hook-form';
 import { EventFormValues, eventSchema } from '@/lib/validations/events';
 import { useSubscriptionStatus } from '@/hooks/use-subscription-status';
 import { toast } from 'sonner';
+import { Spinner } from '../loaders/spinner';
 
-export function CreateEventDialog({
-  openDialogBox,
-}: {
-  openDialogBox?: boolean;
-}) {
+export function CreateEventDialog() {
   const [isDataLoading, setDataLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const { hasActiveSubscription, isLoading } = useSubscriptionStatus();
-
-  useEffect(() => {
-    setOpen(openDialogBox || false);
-  }, [openDialogBox]);
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
@@ -112,7 +105,7 @@ export function CreateEventDialog({
   return (
     <Dialog open={open} onOpenChange={handleOpenChange} modal>
       <DialogTrigger asChild>
-        <Button variant="outline">
+        <Button className='cursor-pointer' >
           <Plus className="mr-2 h-4 w-4" /> Create Event
         </Button>
       </DialogTrigger>
@@ -128,7 +121,9 @@ export function CreateEventDialog({
           }
         }}
       >
-        {!hasActiveSubscription ? (
+        {isLoading ? (
+          <Spinner />
+        ) : !hasActiveSubscription ? (
           <DialogTitle>Subscribe First 😏</DialogTitle>
         ) : (
           <>

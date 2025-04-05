@@ -21,7 +21,7 @@ async function getStorageUsed(userId: string) {
 export default async function BusinessDashboard() {
   const { session, organization, userId } = await withBusinessAuth({
     redirectUnauthenticated: '/',
-    redirectInvalidSubscription: '/dashboard',
+    redirectInvalidSubscription: '/dashboard', 
   });
 
   const [

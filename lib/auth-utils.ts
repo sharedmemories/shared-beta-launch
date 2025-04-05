@@ -88,11 +88,11 @@ export async function requireOrganizationRole(
 
 // Session non-nullable
 export type AuthResult = {
-  session: NonNullable<Awaited<ReturnType<typeof getCachedSession>>>
-  organization: ActiveOrganization | null
-  subscription: Awaited<ReturnType<typeof getPolarSubscription>>
-  userId: string
-}
+  session: NonNullable<Awaited<ReturnType<typeof getCachedSession>>>;
+  organization: ActiveOrganization | null;
+  subscription: Awaited<ReturnType<typeof getPolarSubscription>>;
+  userId: string;
+};
 
 /**
  * Middleware function to handle authentication and subscription validation
@@ -100,34 +100,35 @@ export type AuthResult = {
  * @returns Authentication result with session, organization, and subscription data
  */
 export async function withBusinessAuth(options: {
-  redirectUnauthenticated?: string
-  redirectInvalidSubscription?: string
+  redirectUnauthenticated?: string;
+  redirectInvalidSubscription?: string;
 }): Promise<AuthResult> {
-  const { redirectUnauthenticated = "/", redirectInvalidSubscription = "/dashboard" } = options
+  const {
+    redirectUnauthenticated = '/',
+    redirectInvalidSubscription = '/dashboard',
+  } = options;
 
-  // Get session and organization data
-  const [session, organization, subscription] = await Promise.all([
-    getCachedSession(),
+  const session = await getCachedSession();
+
+  if (!session?.user?.id) {
+    redirect(redirectUnauthenticated);
+  }
+
+  // Get  organization data
+  const [organization, subscription] = await Promise.all([
     auth.api.getFullOrganization({
       headers: await headers(),
     }),
     getPolarSubscription(),
-  ])
-
-  // Check if user is authenticated
-  if (!session?.user?.id) {
-    redirect(redirectUnauthenticated)
-    
-   
-  }
+  ]);
 
   // Validate business subscription
   const isBusinessSubscriptionActive =
-    subscription.subscriptionPlan === "BUSINESS" && subscription.hasActiveSubscription
+    subscription.subscriptionPlan === 'BUSINESS' &&
+    subscription.hasActiveSubscription;
 
   if (!isBusinessSubscriptionActive) {
-    redirect(redirectInvalidSubscription)
-   
+    redirect(redirectInvalidSubscription);
   }
 
   // At this point, we know session is not null
@@ -136,7 +137,7 @@ export async function withBusinessAuth(options: {
     organization,
     subscription,
     userId: session.user.id,
-  }
+  };
 }
 
 /**
@@ -144,8 +145,7 @@ export async function withBusinessAuth(options: {
  */
 export async function withBusinessDashboardAuth() {
   return withBusinessAuth({
-    redirectUnauthenticated: "/",
-    redirectInvalidSubscription: "/dashboard",
-  })
+    redirectUnauthenticated: '/',
+    redirectInvalidSubscription: '/dashboard',
+  });
 }
-
