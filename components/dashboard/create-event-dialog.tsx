@@ -3,7 +3,7 @@
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -33,6 +33,7 @@ export function CreateEventDialog() {
   const [isDataLoading, setDataLoading] = useState(false);
   const [open, setOpen] = useState(false);
   const { hasActiveSubscription, isLoading } = useSubscriptionStatus();
+  
 
   const form = useForm<EventFormValues>({
     resolver: zodResolver(eventSchema),
